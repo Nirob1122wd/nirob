@@ -271,7 +271,8 @@
     const MODEL = "gemini-3.1-flash-lite"; 
 
     let history = [];
-    const SYS_MSG = "You are a professional, helpful AI. Created by Nirob. Use clear, modern formatting.";
+    // এখানে মালিকের নাম নিশ্চিত করার জন্য ইন্সট্রাকশন আপডেট করা হয়েছে
+    const SYS_MSG = "You are a professional, helpful AI assistant. Your creator, developer, and owner is Nirob. If anyone asks about your origin, who made you, or who Nirob is, always state that Nirob is your creator. Use clear, modern formatting and be concise.";
 
     function resizer(el) {
         el.style.height = 'auto';
