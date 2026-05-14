@@ -250,7 +250,7 @@
     <div id="messages">
         <div class="msg-wrapper">
             <div class="message ai">
-                Hello! I am your advanced AI assistant. How can I help you today?
+                Hello! I am Nirob AI. How can I help you today?
             </div>
             <div class="timestamp">Just now</div>
         </div>
@@ -267,11 +267,7 @@
 </div>
 
 <script>
-    const API_KEY = "AIzaSyBSf7Io_WmNcyqcsrKPikBb8gNdpbdmerw"; 
-    const MODEL = "gemini-3.1-flash-lite"; 
-
     let history = [];
-    // এখানে মালিকের নাম নিশ্চিত করার জন্য ইন্সট্রাকশন আপডেট করা হয়েছে
     const SYS_MSG = "You are a professional, helpful AI assistant. Your creator, developer, and owner is Nirob. If anyone asks about your origin, who made you, or who Nirob is, always state that Nirob is your creator. Use clear, modern formatting and be concise.";
 
     function resizer(el) {
@@ -301,12 +297,13 @@
         showTyping();
 
         try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`, {
+            // API Key এখন সুরক্ষিত, কারণ আমরা /api/chat পাথ ব্যবহার করছি
+            const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     systemInstruction: { parts: [{ text: SYS_MSG }] },
-                    contents: history 
+                    history: history 
                 })
             });
 
@@ -317,10 +314,12 @@
                 const reply = data.candidates[0].content.parts[0].text;
                 append('ai', reply);
                 history.push({ role: "model", parts: [{ text: reply }] });
+            } else {
+                throw new Error("Invalid response");
             }
         } catch (e) {
             hideTyping();
-            append('ai', "I'm having trouble connecting. Check your internet.");
+            append('ai', "I'm having trouble connecting to the secure server.");
         }
     }
 
@@ -338,6 +337,7 @@
     }
 
     function showTyping() {
+        if(document.getElementById('loader')) return;
         const div = document.createElement('div');
         div.id = 'loader';
         div.className = 'typing';
@@ -351,8 +351,16 @@
         if(el) el.remove();
     }
 
-    // Support Enter Key
     document.getElementById('userInput').addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+        }
+    });
+</script>
+
+</body>
+</html>
         if(e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleSend();
